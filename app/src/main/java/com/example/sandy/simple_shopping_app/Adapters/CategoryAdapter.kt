@@ -1,6 +1,7 @@
 package com.example.sandy.simple_shopping_app.Adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,18 +19,35 @@ class CategoryAdapter(context:Context,categories:List<Category>) : BaseAdapter()
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
         val categoryView:View
+        val holder:ViewHolder
 
-        categoryView=LayoutInflater.from(context).inflate(R.layout.category_indiview,null)
 
-        val categoryName:TextView=categoryView.findViewById(R.id.categoryName)
-        val categoryImage:ImageView=categoryView.findViewById(R.id.categoryImage)
+        if (convertView==null)
+        {
+
+            categoryView=LayoutInflater.from(context).inflate(R.layout.category_indiview,null)
+            holder= ViewHolder()
+            holder.categoryName=categoryView.findViewById(R.id.categoryName)
+            holder.categoryImage=categoryView.findViewById(R.id.categoryImage)
+
+            categoryView.tag=holder
+
+
+        }else{
+
+            holder=convertView.tag as ViewHolder
+            categoryView=convertView
+        }
+
+
 
         val category=categories[position]
 
+        //Converting String to resource id
         val resorceID=context.resources.getIdentifier(category.image,"drawable",context.packageName)
-        categoryImage.setImageResource(resorceID)
 
-        categoryName.text=category.title
+        holder.categoryImage!!.setImageResource(resorceID)
+        holder.categoryName!!.text=category.title
 
 
         return categoryView
@@ -49,5 +67,11 @@ class CategoryAdapter(context:Context,categories:List<Category>) : BaseAdapter()
     override fun getCount(): Int {
 
         return categories.count()
+    }
+
+    private class ViewHolder{
+
+        var categoryImage:ImageView?=null
+        var categoryName:TextView?=null
     }
 }
